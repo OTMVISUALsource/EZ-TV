@@ -54,14 +54,12 @@
     scroll-behavior:smooth;
     -webkit-text-size-adjust:100%;
     text-size-adjust:100%;
-    overscroll-behavior-y:none;
     background:var(--ink-950);
     scrollbar-gutter:stable;
     scrollbar-width:thin;
     scrollbar-color: rgba(139,92,246,0.55) transparent;
   }
   html, body{
-    touch-action:pan-y;
     overflow-x:hidden;
   }
   body{
@@ -77,9 +75,8 @@
     min-height:100dvh;
     -webkit-font-smoothing:antialiased;
     -webkit-tap-highlight-color:transparent;
-    overscroll-behavior-y:none;
   }
-  input, textarea, select, button, a{ touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  button, a{ touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
   ::selection{ background:rgba(139,92,246,0.4); color:var(--text-hi); }
   h1,h2,h3,h4,.display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em; }
   p{ color:var(--text-mid); line-height:1.6; }
@@ -960,6 +957,16 @@
 const STORAGE_KEY = 'eztv_data_v2';
 const OLD_STORAGE_KEY = 'eztv_data_v1';
 const PIN_KEY = 'eztv_pin_v1';
+
+/* Always start at the top of the page. If the URL was opened with a
+   fragment (e.g. a shared link with #apps, or a leftover from a prior
+   visit), strip it immediately so the browser's native anchor-scroll
+   never fires, then re-assert scroll position after fonts/layout settle. */
+if(window.location.hash){
+  history.replaceState(null, document.title, window.location.pathname + window.location.search);
+}
+window.scrollTo(0, 0);
+
 
 const ICON_EDIT = '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5V20h3.5L18.4 9.1a1.5 1.5 0 0 0 0-2.1l-1.4-1.4a1.5 1.5 0 0 0-2.1 0L4 16.5Z"/></svg>';
 const ICON_DELETE = '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M7 7l1 12.5A1.5 1.5 0 0 0 9.5 21h5a1.5 1.5 0 0 0 1.5-1.5L17 7"/></svg>';
@@ -1950,13 +1957,19 @@ function observeReveals(){
 }
 
 /* ---------------- Init ---------------- */
+if('scrollRestoration' in history){
+  history.scrollRestoration = 'manual';
+}
+
 applyI18n();
 renderAll();
 observeReveals();
 
 window.addEventListener('load', ()=>{
+  window.scrollTo(0, 0);
   setTimeout(()=>{
     document.getElementById('loader').classList.add('hide');
+    window.scrollTo(0, 0);
   }, 900);
 });
 
