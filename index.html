@@ -466,6 +466,11 @@
     font-size:13.5px; color:var(--text-mid); margin-bottom:20px;
   }
   .note-box.warn{ background:rgba(194,100,217,0.1); border-color:rgba(194,100,217,0.4); }
+  .note-box code{
+    background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:5px;
+    font-family:'SFMono-Regular',Consolas,monospace; font-size:12.5px; color:var(--text-hi);
+  }
+  .note-box li{ margin-bottom:6px; }
 
   ::-webkit-scrollbar{ width:11px; height:11px; }
   ::-webkit-scrollbar-track{ background:transparent; }
@@ -870,9 +875,18 @@
     <!-- JSON PANE -->
     <div class="admin-pane" id="paneJson">
       <div class="note-box">
-        Export everything you've published as JSON. You can save this file, back it up, or move it to another
-        browser/device by importing it below. This is a client-side export — publishing it to a live server or
-        GitHub requires a secure backend step that isn't part of this static page.
+        <strong>To publish your content so every visitor sees it:</strong>
+        <ol style="margin:10px 0 0; padding-left:18px;">
+          <li>Click <strong>Download JSON</strong> below — it saves as <code>content.json</code>.</li>
+          <li>Upload that <code>content.json</code> file into the <strong>same GitHub folder</strong> as this HTML file (same repo, same location — replacing the old <code>content.json</code> if one exists).</li>
+          <li>Commit the change. No need to touch the HTML file itself.</li>
+          <li>Visit your live GitHub Pages link — it will now show this content automatically.</li>
+        </ol>
+      </div>
+      <div class="note-box warn">
+        This only works on the real published site (GitHub Pages), not when double-clicking the HTML file on your
+        own computer — local files can't load <code>content.json</code> due to normal browser security. Editing
+        content here in the admin panel always previews instantly in this browser either way.
       </div>
       <div class="hero-actions" style="margin-bottom:14px;">
         <button class="btn btn-primary btn-sm" id="genJson">Generate JSON</button>
@@ -1102,6 +1116,30 @@ const DEFAULT_DATA = {
 };
 
 let DATA = loadData();
+
+/* If a content.json file is published alongside this HTML file (e.g. on
+   GitHub Pages), load it and use it as the live content for every visitor.
+   This only works when the page is served over http/https — opening the
+   HTML file directly on your computer (file://) can't fetch it due to
+   browser security, so local previews will keep showing your last
+   admin-saved content until you view the real published site. */
+async function loadPublishedContent(){
+  try{
+    const res = await fetch('content.json', { cache: 'no-store' });
+    if(!res.ok) return; // no content.json published yet — that's fine
+    const parsed = await res.json();
+    DATA = migrateData(parsed);
+    renderAll();
+    if(document.getElementById('adminPanel').classList.contains('open')){
+      renderAdminLists();
+      document.getElementById('s_version').value = DATA.site.version;
+      document.getElementById('s_updated').value = DATA.site.updated;
+    }
+  }catch(e){
+    // Expected when opened as a local file, or when content.json isn't published yet.
+    console.info('No published content.json loaded — using local/default content.');
+  }
+}
 
 /* ---------------- Migration from old single-language schema ---------------- */
 function migrateData(parsed){
@@ -1908,7 +1946,7 @@ document.getElementById('downloadJson').addEventListener('click', ()=>{
   const blob = new Blob([text], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'eztv-content.json';
+  a.href = url; a.download = 'content.json';
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -1964,6 +2002,7 @@ if('scrollRestoration' in history){
 applyI18n();
 renderAll();
 observeReveals();
+loadPublishedContent();
 
 window.addEventListener('load', ()=>{
   window.scrollTo(0, 0);
