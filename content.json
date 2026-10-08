@@ -308,10 +308,21 @@
       "id": "u_e3rmb0n",
       "title_en": "PLEASE MAKE SURE TO  UPDATE CINEMA HQ",
       "title_es": "POR FAVOR, ASEGÚRESE DE ACTUALIZAR LA SEDE DEL CINE",
-      "date": "2026-10-07",
       "desc_en": "THERE HAS BEEN MANY NEW UPDATES MAKE SURE TO CHECK ALL APPS AND UPDATE ANY ISSUES PLEASE CONTACT PROVIDER FOR NEW CODE INFO OR FOR ANY HELP",
       "desc_es": "HA HABIDO MUCHAS ACTUALIZACIONES NUEVAS, ASEGÚRESE DE REVISAR TODAS LAS APLICACIONES Y ACTUALIZAR CUALQUIER PROBLEMA, PÓNGASE EN CONTACTO CON EL PROVEEDOR PARA OBTENER INFORMACIÓN SOBRE EL NUEVO CÓDIGO O PARA CUALQUIER AYUDA",
+      "date": "2026-10-07",
       "cat": "maintenance",
+      "priority": "important",
+      "link": ""
+    },
+    {
+      "id": "u_bvb6zep",
+      "title_en": "DOWNLOAD PROTON VPN FROM GOOGLE PLAY STORE",
+      "title_es": "DESCARGA PROTON VPN DESDE GOOGLE PLAY STORE",
+      "date": "2026-10-07",
+      "desc_en": "Install proton , create a free account and make sure to link it to the tv , a QR code will appear make sure it’s connected to enjoy sportzx or other apps if Surfshark does not work",
+      "desc_es": "Instale proton, cree una cuenta gratuita y asegúrese de vincularla al televisor, aparecerá un código QR, asegúrese de que esté conectado para disfrutar de sportzx u otras aplicaciones si Surfshark no funciona",
+      "cat": "update",
       "priority": "important",
       "link": ""
     }
